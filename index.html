@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#17152b">
+<title>Tasbih Dhikr Counter</title>
+<meta name="description" content="A beautiful, simple and premium digital Tasbih and Dhikr counter. Create, save and count your own dhikr.">
+<style>
+:root{
+  --bg:#11101d;
+  --panel:#1b1930;
+  --panel2:#24213b;
+  --text:#f8f6ff;
+  --muted:#aaa6c0;
+  --accent:#b69aff;
+  --accent2:#8d70df;
+  --line:rgba(255,255,255,.09);
+  --success:#8ee0bd;
+  --danger:#ff8d9b;
+  --shadow:0 18px 55px rgba(0,0,0,.28);
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  min-height:100vh;
+  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
+  color:var(--text);
+  background:
+    radial-gradient(ellipse at 50% -15%,rgba(147,112,220,.20),transparent 55%),
+    var(--bg);
+  transition:.25s;
+}
+body.light{
+  --bg:#f3f1fa;
+  --panel:#fff;
+  --panel2:#f0edf8;
+  --text:#28223c;
+  --muted:#777087;
+  --accent:#7754c9;
+  --accent2:#9677df;
+  --line:rgba(40,34,60,.10);
+  --success:#24865f;
+  --danger:#d34c64;
+  --shadow:0 16px 45px rgba(44,32,80,.09);
+  background:radial-gradient(ellipse at 50% -15%,#e5dcfa,transparent 55%),var(--bg);
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.app{width:min(100%,720px);margin:auto;padding:22px 18px 38px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{
+  width:44px;height:44px;border-radius:15px;
+  display:grid;place-items:center;
+  background:linear-gradient(145deg,#b69aff,#7658c7);
+  color:white;font-size:23px;box-shadow:0 7px 22px #8060bd55
+}
+.brand h1{font-size:17px;margin:0;font-weight:750;letter-spacing:.1px}
+.brand p{margin:3px 0 0;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
+.icon-btn{
+  width:42px;height:42px;border:1px solid var(--line);border-radius:14px;
+  background:var(--panel);color:var(--text);font-size:18px
+}
+.top-actions{display:flex;gap:8px}
+.panel{
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:23px;padding:19px;box-shadow:var(--shadow)
+}
+.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.section-head h2{font-size:14px;margin:0;font-weight:700}
+.muted{color:var(--muted)}
+.small{font-size:12px}
+.primary,.secondary,.danger-btn{
+  border:0;border-radius:13px;padding:11px 15px;font-weight:700;
+  transition:transform .15s,opacity .15s
+}
+.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
+.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+.danger-btn{background:rgba(220,70,95,.12);color:var(--danger)}
+button:active{transform:scale(.97)}
+.dhikr-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+select,input{
+  width:100%;padding:13px 14px;border:1px solid var(--line);
+  border-radius:13px;background:var(--panel2);color:var(--text);outline:none
+}
+select{flex:1;min-width:0}
+.dhikr-tools{display:flex;gap:8px}
+.dhikr-tools button{white-space:nowrap}
+.counter-card{margin-top:15px;text-align:center;padding:22px 16px 20px}
+.active-label{font-size:12px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase}
+.dhikr-name{font-size:21px;font-weight:750;margin:9px 0 4px;overflow-wrap:anywhere}
+.arabic{
+  font-family:"Noto Naskh Arabic","Amiri",serif;
+  font-size:29px;line-height:1.8;color:var(--accent);margin:0 0 8px;
+  direction:rtl
+}
+.goal-line{font-size:12px;color:var(--muted);margin-bottom:17px}
+.counter-wrap{display:grid;place-items:center;margin:4px auto 17px}
+.counter{
+  width:min(68vw,265px);height:min(68vw,265px);max-width:265px;max-height:265px;
+  border-radius:50%;border:0;position:relative;color:var(--text);
+  background:radial-gradient(circle at 50% 42%,var(--panel2) 0 54%,transparent 55%),
+    conic-gradient(var(--accent) var(--progress,0%),rgba(255,255,255,.09) 0);
+  box-shadow:0 0 0 9px rgba(160,130,220,.06),0 15px 40px rgba(0,0,0,.22);
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+  transition:transform .1s;
+}
+.counter:active{transform:scale(.975)}
+.counter:before{
+  content:"";position:absolute;inset:11px;border-radius:50%;
+  border:1px solid var(--line);pointer-events:none
+}
+.count-number{font-size:clamp(48px,13vw,70px);font-weight:750;line-height:1;font-variant-numeric:tabular-nums}
+.count-caption{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:9px}
+.tap-hint{font-size:12px;color:var(--muted);margin-bottom:18px}
+.progress-track{height:6px;border-radius:20px;background:var(--panel2);overflow:hidden;margin:0 8px 8px}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:20px;transition:width .2s}
+.progress-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:0 8px}
+.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:20px}
+.control{
+  border:1px solid var(--line);border-radius:15px;padding:12px 5px;
+  background:var(--panel2);color:var(--text);font-size:12px;font-weight:650
+}
+.control span{display:block;font-size:19px;margin-bottom:5px}
+.control:disabled{opacity:.38;cursor:not-allowed}
+.quick-actions{display:flex;gap:9px;margin-top:12px}
+.quick-actions button{flex:1}
+.empty{
+  padding:25px 15px;text-align:center;border:1px dashed var(--line);
+  border-radius:17px;color:var(--muted);font-size:13px;line-height:1.7
+}
+.empty .symbol{font-size:30px;margin-bottom:8px}
+.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}
+.stat-value{font-size:25px;font-weight:750;margin-top:7px}
+.stat-label{font-size:12px;color:var(--muted)}
+.list{display:grid;gap:8px}
+.list-item{
+  display:flex;align-items:center;gap:10px;padding:12px;
+  background:var(--panel2);border:1px solid var(--line);border-radius:14px
+}
+.list-main{min-width:0;flex:1}
+.list-title{font-size:14px;font-weight:700;overflow-wrap:anywhere}
+.list-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.mini-btn{border:0;background:transparent;color:var(--muted);font-size:18px;padding:7px}
+.favorite{color:#efb9dc}
+.footer{text-align:center;color:var(--muted);font-size:11px;margin:25px 0 4px}
+.modal-backdrop{
+  position:fixed;inset:0;background:rgba(0,0,0,.65);
+  display:none;align-items:center;justify-content:center;padding:17px;z-index:10
+}
+.modal-backdrop.show{display:flex}
+.modal{
+  width:min(100%,440px);max-height:90vh;overflow:auto;
+  background:var(--panel);border:1px solid var(--line);
+  border-radius:22px;padding:21px;box-shadow:var(--shadow)
+}
+.modal h2{font-size:18px;margin:0 0 17px}
+.field{margin-bottom:13px}
+.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+.modal-actions{display:flex;gap:9px;margin-top:18px}
+.modal-actions button{flex:1}
+.toast{
+  position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);
+  opacity:0;pointer-events:none;background:#28243c;color:white;
+  padding:11px 17px;border-radius:30px;font-size:13px;z-index:20;
+  transition:.25s;box-shadow:var(--shadow);white-space:nowrap
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.hidden{display:none!important}
+@media(max-width:480px){
+  .app{padding:17px 13px 28px}
+  .panel{padding:16px;border-radius:20px}
+  .lower-grid{gap:9px}
+  .controls{gap:6px}
+  .control{font-size:11px}
+  .brand h1{font-size:15px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <div class="logo">☪</div>
+      <div>
+        <h1>Tasbih Dhikr Counter</h1>
+        <p>Your daily remembrance</p>
+      </div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="statsBtn" title="Statistics">▤</button>
+      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
+    </div>
+  </header>
+
+  <section class="panel">
+    <div class="section-head">
+      <h2>My Dhikr</h2>
+      <button class="primary" id="addBtn">＋ Add Dhikr</button>
+    </div>
+    <div id="dhikrArea">
+      <div class="empty">
+        <div class="symbol">📿</div>
+        No dhikr added yet.<br>
+        Add your first dhikr to begin.
+      </div>
+    </div>
+  </section>
+
+  <section class="panel counter-card" id="counterPanel">
+    <div id="counterEmpty">
+      <div class="empty">
+        <div class="symbol">🤍</div>
+        Your counter is ready.<br>
+        Select or add a dhikr to start counting.
+      </div>
+    </div>
+    <div id="counterContent" class="hidden">
+      <div class="active-label">Currently counting</div>
+      <div class="dhikr-name" id="activeName"></div>
+      <div class="arabic" id="activeArabic"></div>
+      <div class="goal-line" id="goalText">No target set</div>
+
+      <div class="counter-wrap">
+        <button class="counter" id="countBtn" aria-label="Tap to count">
+          <span class="count-number" id="countNumber">0</span>
+          <span class="count-caption">TAP TO COUNT</span>
+        </button>
+      </div>
+      <div class="tap-hint">Tap the circle to increase your count</div>
+
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+      <div class="progress-caption">
+        <span id="progressLeft">Goal not set</span>
+        <span id="progressRight">0%</span>
+      </div>
+
+      <div class="controls">
+        <button class="control" id="undoBtn"><span>↶</span>Undo</button>
+        <button class="control" id="resetBtn"><span>⟲</span>Reset</button>
+        <button class="control" id="goalBtn"><span>◎</span>Set Goal</button>
+        <button class="control" id="favBtn"><span>♡</span>Favorite</button>
+      </div>
+      <div class="quick-actions">
+        <button class="secondary" id="editBtn">Edit Dhikr</button>
+        <button class="secondary" id="shareBtn">Share Progress</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="lower-grid">
+    <section class="panel">
+      <div class="stat-label">Today's total</div>
+      <div class="stat-value" id="todayTotal">0</div>
+      <div class="stat-label">Dhikr counted today</div>
+    </section>
+    <section class="panel">
+      <div class="stat-label">All-time total</div>
+      <div class="stat-value" id="allTotal">0</div>
+      <div class="stat-label">Across your dhikr</div>
+    </section>
+  </div>
+
+  <section class="panel" style="margin-top:15px">
+    <div class="section-head">
+      <h2>My Favorites</h2>
+      <span class="muted small" id="favoriteCount">0 saved</span>
+    </div>
+    <div class="list" id="favoritesList">
+      <div class="muted small">Your favorite dhikr will appear here.</div>
+    </div>
+  </section>
+
+  <div class="footer">Tasbih Dhikr Counter · Made for your daily remembrance</div>
+</div>
+
+<!-- ADD / EDIT DHI​​KR -->
+<div class="modal-backdrop" id="dhikrModal">
+  <div class="modal">
+    <h2 id="dhikrModalTitle">Add a Dhikr</h2>
+    <form id="dhikrForm">
+      <div class="field">
+        <label for="dhikrNameInput">Dhikr name *</label>
+        <input id="dhikrNameInput" required maxlength="70" placeholder="Example: SubhanAllah">
+      </div>
+      <div class="field">
+        <label for="dhikrArabicInput">Arabic text (optional)</label>
+        <input id="dhikrArabicInput" maxlength="120" placeholder="سُبْحَانَ اللَّهِ">
+      </div>
+      <div class="field">
+        <label for="dhikrMeaningInput">Meaning / Notes (optional)</label>
+        <input id="dhikrMeaningInput" maxlength="120" placeholder="Glory be to Allah">
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="secondary" data-close="dhikrModal">Cancel</button>
+        <button type="submit" class="primary">Save Dhikr</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- GOAL MODAL -->
+<div class="modal-backdrop" id="goalModal">
+  <div class="modal">
+    <h2>Set Your Target</h2>
+    <div class="field">
+      <label for="goalInput">Target count (enter 0 to remove target)</label>
+      <input id="goalInput" type="number" min="0" step="1" placeholder="Example: 100">
+    </div>
+    <div class="modal-actions">
+      <button class="secondary" data-close="goalModal">Cancel</button>
+      <button class="primary" id="saveGoalBtn">Save Target</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET MODAL -->
+<div class="modal-backdrop" id="resetModal">
+  <div class="modal">
+    <h2>Reset this Dhikr?</h2>
+    <p class="muted small">This will reset the current dhikr count to zero. Your saved dhikr and target will remain.</p>
+    <div class="modal-actions">
+      <button class="secondary" data-close="resetModal">Cancel</button>
+      <button class="danger-btn" id="confirmResetBtn">Reset Count</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <h2>Settings</h2>
+    <div class="field">
+      <label for="themeSelect">Appearance</label>
+      <select id="themeSelect">
+        <option value="dark">Midnight Purple</option>
+        <option value="light">Light</option>
+      </select>
+    </div>
+    <div class="field">
+      <label><input type="checkbox" id="vibrationToggle" style="width:auto;margin-right:8px">Vibration on tap</label>
+    </div>
+    <div class="field">
+      <label><input type="checkbox" id="soundToggle" style="width:auto;margin-right:8px">Sound on tap</label>
+    </div>
+    <div class="field">
+      <button class="secondary" id="exportBtn" style="width:100%">Export My Data</button>
+    </div>
+    <div class="field">
+      <button class="secondary" id="importBtn" style="width:100%">Import Backup</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
+    </div>
+    <div class="modal-actions">
+      <button class="primary" data-close="settingsModal">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- STATS MODAL -->
+<div class="modal-backdrop" id="statsModal">
+  <div class="modal">
+    <h2>Your Statistics</h2>
+    <div class="list">
+      <div class="list-item"><div class="list-main"><div class="list-title">Total Dhikr</div></div><strong id="statsAll">0</strong></div>
+      <div class="list-item"><div class="list-main"><div class="list-title">Today's Dhikr</div></div><strong id="statsToday">0</strong></div>
+      <div class="list-item"><div class="list-main"><div class="list-title">Saved Dhikr</div></div><strong id="statsItems">0</strong></div>
+      <div class="list-item"><div class="list-main"><div class="list-title">Favorites</div></div><strong id="statsFavs">0</strong></div>
+    </div>
+    <div class="modal-actions">
+      <button class="primary" data-close="statsModal">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+"use strict";
+
+const STORAGE_KEY = "tasbihDhikrCounter_v1";
+const $ = id => document.getElementById(id);
+
+const todayKey = () => {
+  const d = new Date();
+  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+};
+
+const defaultData = () => ({
+  items: [],
+  selectedId: null,
+  settings: {theme:"dark", vibration:false, sound:false},
+  daily: {date:todayKey(), total:0},
+  history: []
+});
+
+let data = loadData();
+let editingId = null;
+
+function loadData(){
+  try{
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if(!saved) return defaultData();
+    const parsed = JSON.parse(saved);
+    return {
+      ...defaultData(),
+      ...parsed,
+      items: Array.isArray(parsed.items) ? parsed.items : [],
+      settings: {...defaultData().settings,...parsed.settings},
+      daily: parsed.daily || defaultData().daily,
+      history: Array.isArray(parsed.history) ? parsed.history : []
+    };
+  }catch(e){ return defaultData(); }
+}
+
+function save(){
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }
+  catch(e){ toast("Unable to save. Please check browser storage."); }
+}
+
+function current(){
+  return data.items.find(x=>x.id===data.selectedId) || null;
+}
+
+function toast(message){
+  const t=$("toast");
+  t.textContent=message;
+  t.classList.add("show");
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>t.classList.remove("show"),2200);
+}
+
+function openModal(id){ $(id).classList.add("show"); }
+function closeModal(id){ $(id).classList.remove("show"); }
+
+document.querySelectorAll("[data-close]").forEach(btn=>{
+  btn.addEventListener("click",()=>closeModal(btn.dataset.close));
+});
+document.querySelectorAll(".modal-backdrop").forEach(back=>{
+  back.addEventListener("click",e=>{
+    if(e.target===back) back.classList.remove("show");
+  });
+});
+
+function render(){
+  if(data.daily.date!==todayKey()){
+    data.daily={date:todayKey(),total:0};
+  }
+
+  document.body.classList.toggle("light",data.settings.theme==="light");
+  $("themeSelect").value=data.settings.theme;
+  $("vibrationToggle").checked=!!data.settings.vibration;
+  $("soundToggle").checked=!!data.settings.sound;
+
+  renderDhikrList();
+  renderCounter();
+  renderFavorites();
+  renderTotals();
+  save();
+}
+
+function renderDhikrList(){
+  const area=$("dhikrArea");
+  if(!data.items.length){
+    area.innerHTML='<div class="empty"><div class="symbol">📿</div>No dhikr added yet.<br>Add your first dhikr to begin.</div>';
+    return;
+  }
+
+  const select=document.createElement("select");
+  select.id="dhikrSelect";
+  select.setAttribute("aria-label","Select dhikr");
+  select.innerHTML='<option value="">Choose a dhikr</option>';
+  data.items.forEach(item=>{
+    const op=document.createElement("option");
+    op.value=item.id;
+    op.textContent=item.name;
+    select.appendChild(op);
+  });
+  select.value=data.selectedId || "";
+  select.addEventListener("change",()=>{
+    data.selectedId=select.value || null;
+    data.history=[];
+    render();
+  });
+
+  const tools=document.createElement("div");
+  tools.className="dhikr-tools";
+  const del=document.createElement("button");
+  del.className="secondary";
+  del.textContent="Delete";
+  del.addEventListener("click",deleteCurrent);
+  tools.appendChild(del);
+
+  area.innerHTML="";
+  const row=document.createElement("div");
+  row.className="dhikr-row";
+  row.append(select,tools);
+  area.appendChild(row);
+}
+
+function renderCounter(){
+  const item=current();
+  $("counterEmpty").classList.toggle("hidden",!!item);
+  $("counterContent").classList.toggle("hidden",!item);
+  if(!item) return;
+
+  $("activeName").textContent=item.name;
+  $("activeArabic").textContent=item.arabic || "";
+  $("activeArabic").style.display=item.arabic ? "block" : "none";
+  $("countNumber").textContent=item.count.toLocaleString();
+  $("goalText").textContent=item.goal>0 ? "Target: "+item.goal.toLocaleString() : "No target set";
+
+  const percent=item.goal>0 ? Math.min(100,item.count/item.goal*100) : 0;
+  $("countBtn").style.setProperty("--progress",percent+"%");
+  $("progressFill").style.width=percent+"%";
+  $("progressLeft").textContent=item.goal>0 ?
+    Math.max(0,item.goal-item.count).toLocaleString()+" remaining" : "Goal not set";
+  $("progressRight").textContent=item.goal>0 ? Math.round(percent)+"%" : "—";
+  $("undoBtn").disabled=!data.history.length;
+  $("favBtn").innerHTML=item.favorite ? "<span>♥</span>Saved" : "<span>♡</span>Favorite";
+  $("favBtn").classList.toggle("favorite",!!item.favorite);
+}
+
+function renderFavorites(){
+  const favs=data.items.filter(x=>x.favorite);
+  $("favoriteCount").textContent=favs.length+" saved";
+  const list=$("favoritesList");
+  list.innerHTML="";
+  if(!favs.length){
+    list.innerHTML='<div class="muted small">Your favorite dhikr will appear here.</div>';
+    return;
+  }
+  favs.forEach(item=>{
+    const row=document.createElement("div");
+    row.className="list-item";
+    const main=document.createElement("div");
+    main.className="list-main";
+    const title=document.createElement("div");
+    title.className="list-title";
+    title.textContent=item.name;
+    const sub=document.createElement("div");
+    sub.className="list-sub";
+    sub.textContent=item.count.toLocaleString()+" counts";
+    main.append(title,sub);
+    const use=document.createElement("button");
+    use.className="secondary";
+    use.textContent="Select";
+    use.addEventListener("click",()=>{
+      data.selectedId=item.id;
+      data.history=[];
+      render();
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+    row.append(main,use);
+    list.appendChild(row);
+  });
+}
+
+function renderTotals(){
+  const all=data.items.reduce((sum,item)=>sum+item.count,0);
+  $("todayTotal").textContent=(data.daily.total||0).toLocaleString();
+  $("allTotal").textContent=all.toLocaleString();
+  $("statsAll").textContent=all.toLocaleString();
+  $("statsToday").textContent=(data.daily.total||0).toLocaleString();
+  $("statsItems").textContent=data.items.length;
+  $("statsFavs").textContent=data.items.filter(x=>x.favorite).length;
+}
+
+function addDhikr(){
+  editingId=null;
+  $("dhikrModalTitle").textContent="Add a Dhikr";
+  $("dhikrForm").reset();
+  openModal("dhikrModal");
+  setTimeout(()=>$("dhikrNameInput").focus(),100);
+}
+
+function editDhikr(){
+  const item=current();
+  if(!item) return;
+  editingId=item.id;
+  $("dhikrModalTitle").textContent="Edit Dhikr";
+  $("dhikrNameInput").value=item.name;
+  $("dhikrArabicInput").value=item.arabic||"";
+  $("dhikrMeaningInput").value=item.meaning||"";
+  openModal("dhikrModal");
+}
+
+$("addBtn").addEventListener("click",addDhikr);
+$("editBtn").addEventListener("click",editDhikr);
+
+$("dhikrForm").addEventListener("submit",e=>{
+  e.preventDefault();
+  const name=$("dhikrNameInput").value.trim();
+  if(!name) return;
+  const arabic=$("dhikrArabicInput").value.trim();
+  const meaning=$("dhikrMeaningInput").value.trim();
+
+  if(editingId){
+    const item=data.items.find(x=>x.id===editingId);
+    if(item) Object.assign(item,{name,arabic,meaning});
+    toast("Dhikr updated");
+  }else{
+    const item={
+      id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
+      name,arabic,meaning,count:0,goal:0,favorite:false
+    };
+    data.items.push(item);
+    data.selectedId=item.id;
+    data.history=[];
+    toast("Dhikr saved");
+  }
+  closeModal("dhikrModal");
+  render();
+});
+
+function deleteCurrent(){
+  const item=current();
+  if(!item) return;
+  if(!confirm('Delete "'+item.name+'"? This will remove its saved count and target.')) return;
+  data.items=data.items.filter(x=>x.id!==item.id);
+  data.selectedId=null;
+  data.history=[];
+  render();
+  toast("Dhikr deleted");
+}
+
+function count(){
+  const item=current();
+  if(!item){toast("Please add or select a dhikr first");return;}
+  data.history.push({id:item.id,count:item.count});
+  if(data.history.length>100) data.history.shift();
+  item.count++;
+  data.daily.total=(data.daily.total||0)+1;
+  render();
+  if(data.settings.vibration && navigator.vibrate) navigator.vibrate(25);
+  if(data.settings.sound) playSound();
+  if(item.goal>0 && item.count===item.goal) toast("Target completed! Alhamdulillah");
+}
+
+$("countBtn").addEventListener("click",count);
+
+function undo(){
+  const previous=data.history.pop();
+  if(!previous){toast("Nothing to undo");return;}
+  const item=data.items.find(x=>x.id===previous.id);
+  if(item){
+    const difference=item.count-previous.count;
+    item.count=previous.count;
+    data.daily.total=Math.max(0,(data.daily.total||0)-difference);
+  }
+  render();
+  toast("Last count undone");
+}
+$("undoBtn").addEventListener("click",undo);
+
+$("resetBtn").addEventListener("click",()=>{
+  if(!current()) return;
+  openModal("resetModal");
+});
+$("confirmResetBtn").addEventListener("click",()=>{
+  const item=current();
+  if(!item) return;
+  data.daily.total=Math.max(0,(data.daily.total||0)-item.count);
+  item.count=0;
+  data.history=[];
+  closeModal("resetModal");
+  render();
+  toast("Count reset");
+});
+
+$("goalBtn").addEventListener("click",()=>{
+  const item=current();
+  if(!item) return;
+  $("goalInput").value=item.goal||"";
+  openModal("goalModal");
+});
+$("saveGoalBtn").addEventListener("click",()=>{
+  const item=current();
+  if(!item) return;
+  const value=Math.max(0,Math.floor(Number($("goalInput").value)||0));
+  item.goal=value;
+  closeModal("goalModal");
+  render();
+  toast(value ? "Target saved" : "Target removed");
+});
+
+$("favBtn").addEventListener("click",()=>{
+  const item=current();
+  if(!item) return;
+  item.favorite=!item.favorite;
+  render();
+  toast(item.favorite ? "Added to favorites" : "Removed from favorites");
+});
+
+$("shareBtn").addEventListener("click",async()=>{
+  const item=current();
+  if(!item) return;
+  const message="My Dhikr Progress\n"+item.name+"\nCount: "+item.count+
+    (item.goal>0 ? "\nTarget: "+item.goal : "")+"\nTasbih Dhikr Counter";
+  try{
+    if(navigator.share) await navigator.share({title:"My Dhikr Progress",text:message});
+    else if(navigator.clipboard){
+      await navigator.clipboard.writeText(message);
+      toast("Progress copied");
+    }else toast(message);
+  }catch(e){}
+});
+
+$("settingsBtn").addEventListener("click",()=>openModal("settingsModal"));
+$("statsBtn").addEventListener("click",()=>openModal("statsModal"));
+
+$("themeSelect").addEventListener("change",()=>{
+  data.settings.theme=$("themeSelect").value;
+  render();
+});
+$("vibrationToggle").addEventListener("change",()=>{
+  data.settings.vibration=$("vibrationToggle").checked;
+  save();
+});
+$("soundToggle").addEventListener("change",()=>{
+  data.settings.sound=$("soundToggle").checked;
+  save();
+});
+
+function playSound(){
+  try{
+    const AudioContext=window.AudioContext||window.webkitAudioContext;
+    if(!AudioContext) return;
+    const ctx=new AudioContext();
+    const oscillator=ctx.createOscillator();
+    const gain=ctx.createGain();
+    oscillator.frequency.value=700;
+    gain.gain.setValueAtTime(.045,ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.06);
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime+.06);
+    oscillator.onended=()=>ctx.close();
+  }catch(e){}
+}
+
+$("exportBtn").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url;
+  a.download="tasbih-dhikr-backup.json";
+  a.click();
+  URL.revokeObjectURL(url);
+  toast("Backup downloaded");
+});
+
+$("importBtn").addEventListener("click",()=>$("importFile").click());
+$("importFile").addEventListener("change",async e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  try{
+    const imported=JSON.parse(await file.text());
+    if(!Array.isArray(imported.items)) throw new Error("Invalid backup");
+    if(!confirm("Import backup? This will replace the data currently saved in this browser.")) return;
+    data={
+      ...defaultData(),
+      ...imported,
+      settings:{...defaultData().settings,...imported.settings}
+    };
+    render();
+    closeModal("settingsModal");
+    toast("Backup imported");
+  }catch(err){toast("Could not read that backup file");}
+  e.target.value="";
+});
+
+render();
+})();
+</script>
+</body>
+</html>
