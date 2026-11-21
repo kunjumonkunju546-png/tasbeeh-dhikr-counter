@@ -2,780 +2,323 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#17152b">
-<title>Tasbih Dhikr Counter</title>
-<meta name="description" content="A beautiful, simple and premium digital Tasbih and Dhikr counter. Create, save and count your own dhikr.">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#171329">
+<title>Dhikr Counter</title>
 <style>
-:root{
-  --bg:#11101d;
-  --panel:#1b1930;
-  --panel2:#24213b;
-  --text:#f8f6ff;
-  --muted:#aaa6c0;
-  --accent:#b69aff;
-  --accent2:#8d70df;
-  --line:rgba(255,255,255,.09);
-  --success:#8ee0bd;
-  --danger:#ff8d9b;
-  --shadow:0 18px 55px rgba(0,0,0,.28);
-}
-*{box-sizing:border-box}
-body{
-  margin:0;
-  min-height:100vh;
-  font-family:system-ui,-apple-system,"Segoe UI",sans-serif;
-  color:var(--text);
-  background:
-    radial-gradient(ellipse at 50% -15%,rgba(147,112,220,.20),transparent 55%),
-    var(--bg);
-  transition:.25s;
-}
-body.light{
-  --bg:#f3f1fa;
-  --panel:#fff;
-  --panel2:#f0edf8;
-  --text:#28223c;
-  --muted:#777087;
-  --accent:#7754c9;
-  --accent2:#9677df;
-  --line:rgba(40,34,60,.10);
-  --success:#24865f;
-  --danger:#d34c64;
-  --shadow:0 16px 45px rgba(44,32,80,.09);
-  background:radial-gradient(ellipse at 50% -15%,#e5dcfa,transparent 55%),var(--bg);
-}
-button,input,select{font:inherit}
-button{cursor:pointer}
-button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
-.app{width:min(100%,720px);margin:auto;padding:22px 18px 38px}
-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:26px}
-.brand{display:flex;align-items:center;gap:11px}
-.logo{
-  width:44px;height:44px;border-radius:15px;
-  display:grid;place-items:center;
-  background:linear-gradient(145deg,#b69aff,#7658c7);
-  color:white;font-size:23px;box-shadow:0 7px 22px #8060bd55
-}
-.brand h1{font-size:17px;margin:0;font-weight:750;letter-spacing:.1px}
-.brand p{margin:3px 0 0;color:var(--muted);font-size:11px;letter-spacing:1.5px;text-transform:uppercase}
-.icon-btn{
-  width:42px;height:42px;border:1px solid var(--line);border-radius:14px;
-  background:var(--panel);color:var(--text);font-size:18px
-}
-.top-actions{display:flex;gap:8px}
-.panel{
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:23px;padding:19px;box-shadow:var(--shadow)
-}
-.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
-.section-head h2{font-size:14px;margin:0;font-weight:700}
-.muted{color:var(--muted)}
-.small{font-size:12px}
-.primary,.secondary,.danger-btn{
-  border:0;border-radius:13px;padding:11px 15px;font-weight:700;
-  transition:transform .15s,opacity .15s
-}
-.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:white}
-.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
-.danger-btn{background:rgba(220,70,95,.12);color:var(--danger)}
-button:active{transform:scale(.97)}
-.dhikr-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-select,input{
-  width:100%;padding:13px 14px;border:1px solid var(--line);
-  border-radius:13px;background:var(--panel2);color:var(--text);outline:none
-}
-select{flex:1;min-width:0}
-.dhikr-tools{display:flex;gap:8px}
-.dhikr-tools button{white-space:nowrap}
-.counter-card{margin-top:15px;text-align:center;padding:22px 16px 20px}
-.active-label{font-size:12px;color:var(--muted);letter-spacing:1.4px;text-transform:uppercase}
-.dhikr-name{font-size:21px;font-weight:750;margin:9px 0 4px;overflow-wrap:anywhere}
-.arabic{
-  font-family:"Noto Naskh Arabic","Amiri",serif;
-  font-size:29px;line-height:1.8;color:var(--accent);margin:0 0 8px;
-  direction:rtl
-}
-.goal-line{font-size:12px;color:var(--muted);margin-bottom:17px}
-.counter-wrap{display:grid;place-items:center;margin:4px auto 17px}
-.counter{
-  width:min(68vw,265px);height:min(68vw,265px);max-width:265px;max-height:265px;
-  border-radius:50%;border:0;position:relative;color:var(--text);
-  background:radial-gradient(circle at 50% 42%,var(--panel2) 0 54%,transparent 55%),
-    conic-gradient(var(--accent) var(--progress,0%),rgba(255,255,255,.09) 0);
-  box-shadow:0 0 0 9px rgba(160,130,220,.06),0 15px 40px rgba(0,0,0,.22);
-  display:flex;align-items:center;justify-content:center;flex-direction:column;
-  user-select:none;-webkit-tap-highlight-color:transparent;
-  transition:transform .1s;
-}
-.counter:active{transform:scale(.975)}
-.counter:before{
-  content:"";position:absolute;inset:11px;border-radius:50%;
-  border:1px solid var(--line);pointer-events:none
-}
-.count-number{font-size:clamp(48px,13vw,70px);font-weight:750;line-height:1;font-variant-numeric:tabular-nums}
-.count-caption{font-size:11px;letter-spacing:2px;color:var(--muted);margin-top:9px}
-.tap-hint{font-size:12px;color:var(--muted);margin-bottom:18px}
-.progress-track{height:6px;border-radius:20px;background:var(--panel2);overflow:hidden;margin:0 8px 8px}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent));border-radius:20px;transition:width .2s}
-.progress-caption{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;margin:0 8px}
-.controls{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin-top:20px}
-.control{
-  border:1px solid var(--line);border-radius:15px;padding:12px 5px;
-  background:var(--panel2);color:var(--text);font-size:12px;font-weight:650
-}
-.control span{display:block;font-size:19px;margin-bottom:5px}
-.control:disabled{opacity:.38;cursor:not-allowed}
-.quick-actions{display:flex;gap:9px;margin-top:12px}
-.quick-actions button{flex:1}
-.empty{
-  padding:25px 15px;text-align:center;border:1px dashed var(--line);
-  border-radius:17px;color:var(--muted);font-size:13px;line-height:1.7
-}
-.empty .symbol{font-size:30px;margin-bottom:8px}
-.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;margin-top:15px}
-.stat-value{font-size:25px;font-weight:750;margin-top:7px}
-.stat-label{font-size:12px;color:var(--muted)}
-.list{display:grid;gap:8px}
-.list-item{
-  display:flex;align-items:center;gap:10px;padding:12px;
-  background:var(--panel2);border:1px solid var(--line);border-radius:14px
-}
-.list-main{min-width:0;flex:1}
-.list-title{font-size:14px;font-weight:700;overflow-wrap:anywhere}
-.list-sub{font-size:11px;color:var(--muted);margin-top:3px}
-.mini-btn{border:0;background:transparent;color:var(--muted);font-size:18px;padding:7px}
-.favorite{color:#efb9dc}
-.footer{text-align:center;color:var(--muted);font-size:11px;margin:25px 0 4px}
-.modal-backdrop{
-  position:fixed;inset:0;background:rgba(0,0,0,.65);
-  display:none;align-items:center;justify-content:center;padding:17px;z-index:10
-}
-.modal-backdrop.show{display:flex}
-.modal{
-  width:min(100%,440px);max-height:90vh;overflow:auto;
-  background:var(--panel);border:1px solid var(--line);
-  border-radius:22px;padding:21px;box-shadow:var(--shadow)
-}
-.modal h2{font-size:18px;margin:0 0 17px}
-.field{margin-bottom:13px}
-.field label{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
-.modal-actions{display:flex;gap:9px;margin-top:18px}
-.modal-actions button{flex:1}
-.toast{
-  position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);
-  opacity:0;pointer-events:none;background:#28243c;color:white;
-  padding:11px 17px;border-radius:30px;font-size:13px;z-index:20;
-  transition:.25s;box-shadow:var(--shadow);white-space:nowrap
-}
-.toast.show{opacity:1;transform:translate(-50%,0)}
-.hidden{display:none!important}
-@media(max-width:480px){
-  .app{padding:17px 13px 28px}
-  .panel{padding:16px;border-radius:20px}
-  .lower-grid{gap:9px}
-  .controls{gap:6px}
-  .control{font-size:11px}
-  .brand h1{font-size:15px}
-}
+:root{--bg:#100e1c;--panel:#1b1830;--panel2:#24203c;--text:#f5f3ff;--muted:#aaa4c4;--accent:#a78bfa;--accent2:#67e8f9;--line:#39324f;--button:#29243f}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:system-ui,sans-serif;touch-action:manipulation}
+body{user-select:none}
+.app{height:100dvh;display:flex;flex-direction:column;padding:env(safe-area-inset-top) 15px calc(env(safe-area-inset-bottom) + 8px);max-width:600px;margin:auto}
+.counter-area{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;min-height:0}
+.orb{width:min(75vw,370px);aspect-ratio:1;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 32% 25%,#48406e,#292342 45%,#171329 80%);border:1px solid #4e456f;box-shadow:inset 0 5px 25px #ffffff12,0 20px 65px #05040c80;transition:transform .08s}
+.counter-area:active .orb{transform:scale(.985)}
+.counter-inner{display:flex;flex-direction:column;align-items:center;pointer-events:none}
+.count{font-size:clamp(66px,19vw,108px);font-weight:750;line-height:1;letter-spacing:-.05em;font-variant-numeric:tabular-nums;text-shadow:0 3px 25px #a78bfa33}
+.hint{font-size:12px;color:var(--muted);margin-top:19px}
+.bottom-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;padding:10px 0 3px;border-top:1px solid var(--line);margin-top:8px}
+.control{border:1px solid var(--line);background:var(--button);color:var(--text);border-radius:11px;padding:7px 5px;font-size:11px;font-weight:600;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:43px}
+.control.primary{border-color:#a78bfa66;background:linear-gradient(135deg,#3b315c,#28223f)}
+.ico{font-size:17px;line-height:1}
+.modal{display:none;position:fixed;inset:0;background:#07060cb8;z-index:10;align-items:flex-end;justify-content:center;padding:12px}
+.modal.show{display:flex}
+.sheet{width:100%;max-width:560px;background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:17px;max-height:86dvh;overflow:auto}
+.sheet-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.sheet h2{font-size:19px;margin:0}
+.close{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:11px;width:36px;height:36px;font-size:20px}
+.section-title{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:14px 0 4px}
+.setting{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid var(--line)}
+.setting label{font-size:13px}
+.setting select,.setting input{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:10px;padding:9px;max-width:165px}
+.setting input[type=checkbox]{width:19px;height:19px;accent-color:var(--accent)}
+.action{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:11px;border-radius:11px;margin-top:8px;width:100%;font-weight:600;font-size:13px}
+.action:disabled{opacity:.4}
+.action.danger{color:#ff9baf}
+.listrow{display:flex;align-items:center;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)}
+.listrow .name{flex:1;font-size:13px}
+.listrow button{background:var(--panel2);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:7px 9px}
+.toast{position:fixed;left:50%;bottom:95px;transform:translateX(-50%);background:var(--panel2);border:1px solid var(--line);border-radius:30px;padding:9px 14px;color:var(--text);font-size:12px;opacity:0;pointer-events:none;z-index:20}
+.toast.show{opacity:1}
+body.theme-blue{--bg:#081321;--panel:#10243a;--panel2:#17314c;--text:#eef8ff;--muted:#9ab4ca;--accent:#60a5fa;--accent2:#67e8f9;--line:#27445e;--button:#18324b}
+body.theme-black{--bg:#000;--panel:#101010;--panel2:#1b1b1b;--text:#f4f4f4;--muted:#a2a2a2;--accent:#d4d4d4;--line:#333;--button:#1a1a1a}
+body.theme-teal{--bg:#071a1b;--panel:#102b2c;--panel2:#173b3c;--text:#eaffff;--muted:#9fc8c7;--accent:#5eead4;--line:#285253;--button:#173a3b}
+body.theme-rose{--bg:#21121c;--panel:#351d2b;--panel2:#48273a;--text:#fff2f7;--muted:#d2a9bc;--accent:#fb7185;--line:#63364e;--button:#48283a}
+body.theme-mint{--bg:#102019;--panel:#1b3026;--panel2:#254333;--text:#f0fff5;--muted:#a9cbb5;--accent:#86efac;--line:#3a5c47;--button:#254333}
 </style>
 </head>
 <body>
-<div class="app">
-  <header>
-    <div class="brand">
-      <div class="logo">☪</div>
-      <div>
-        <h1>Tasbih Dhikr Counter</h1>
-        <p>Your daily remembrance</p>
-      </div>
-    </div>
-    <div class="top-actions">
-      <button class="icon-btn" id="statsBtn" title="Statistics">▤</button>
-      <button class="icon-btn" id="settingsBtn" title="Settings">⚙</button>
-    </div>
-  </header>
-
-  <section class="panel">
-    <div class="section-head">
-      <h2>My Dhikr</h2>
-      <button class="primary" id="addBtn">＋ Add Dhikr</button>
-    </div>
-    <div id="dhikrArea">
-      <div class="empty">
-        <div class="symbol">📿</div>
-        No dhikr added yet.<br>
-        Add your first dhikr to begin.
-      </div>
-    </div>
-  </section>
-
-  <section class="panel counter-card" id="counterPanel">
-    <div id="counterEmpty">
-      <div class="empty">
-        <div class="symbol">🤍</div>
-        Your counter is ready.<br>
-        Select or add a dhikr to start counting.
-      </div>
-    </div>
-    <div id="counterContent" class="hidden">
-      <div class="active-label">Currently counting</div>
-      <div class="dhikr-name" id="activeName"></div>
-      <div class="arabic" id="activeArabic"></div>
-      <div class="goal-line" id="goalText">No target set</div>
-
-      <div class="counter-wrap">
-        <button class="counter" id="countBtn" aria-label="Tap to count">
-          <span class="count-number" id="countNumber">0</span>
-          <span class="count-caption">TAP TO COUNT</span>
-        </button>
-      </div>
-      <div class="tap-hint">Tap the circle to increase your count</div>
-
-      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-      <div class="progress-caption">
-        <span id="progressLeft">Goal not set</span>
-        <span id="progressRight">0%</span>
-      </div>
-
-      <div class="controls">
-        <button class="control" id="undoBtn"><span>↶</span>Undo</button>
-        <button class="control" id="resetBtn"><span>⟲</span>Reset</button>
-        <button class="control" id="goalBtn"><span>◎</span>Set Goal</button>
-        <button class="control" id="favBtn"><span>♡</span>Favorite</button>
-      </div>
-      <div class="quick-actions">
-        <button class="secondary" id="editBtn">Edit Dhikr</button>
-        <button class="secondary" id="shareBtn">Share Progress</button>
-      </div>
-    </div>
-  </section>
-
-  <div class="lower-grid">
-    <section class="panel">
-      <div class="stat-label">Today's total</div>
-      <div class="stat-value" id="todayTotal">0</div>
-      <div class="stat-label">Dhikr counted today</div>
-    </section>
-    <section class="panel">
-      <div class="stat-label">All-time total</div>
-      <div class="stat-value" id="allTotal">0</div>
-      <div class="stat-label">Across your dhikr</div>
-    </section>
-  </div>
-
-  <section class="panel" style="margin-top:15px">
-    <div class="section-head">
-      <h2>My Favorites</h2>
-      <span class="muted small" id="favoriteCount">0 saved</span>
-    </div>
-    <div class="list" id="favoritesList">
-      <div class="muted small">Your favorite dhikr will appear here.</div>
-    </div>
-  </section>
-
-  <div class="footer">Tasbih Dhikr Counter · Made for your daily remembrance</div>
+<div class="app" id="app">
+<main class="counter-area" id="tapArea" role="button" tabindex="0" aria-label="Tap to count">
+<div class="orb"><div class="counter-inner"><div class="count" id="count">0</div></div></div>
+<div class="hint">Tap anywhere to count</div>
+</main>
+<div class="bottom-bar">
+<button class="control" id="undo"><span class="ico">↶</span>Undo</button>
+<button class="control primary" id="reset"><span class="ico">⟲</span>Reset</button>
+<button class="control" id="optionsBtn"><span class="ico">☷</span>Options</button>
+<button class="control" id="settingsBtn"><span class="ico">⚙</span>Settings</button>
+</div>
 </div>
 
-<!-- ADD / EDIT DHI​​KR -->
-<div class="modal-backdrop" id="dhikrModal">
-  <div class="modal">
-    <h2 id="dhikrModalTitle">Add a Dhikr</h2>
-    <form id="dhikrForm">
-      <div class="field">
-        <label for="dhikrNameInput">Dhikr name *</label>
-        <input id="dhikrNameInput" required maxlength="70" placeholder="Example: SubhanAllah">
-      </div>
-      <div class="field">
-        <label for="dhikrArabicInput">Arabic text (optional)</label>
-        <input id="dhikrArabicInput" maxlength="120" placeholder="سُبْحَانَ اللَّهِ">
-      </div>
-      <div class="field">
-        <label for="dhikrMeaningInput">Meaning / Notes (optional)</label>
-        <input id="dhikrMeaningInput" maxlength="120" placeholder="Glory be to Allah">
-      </div>
-      <div class="modal-actions">
-        <button type="button" class="secondary" data-close="dhikrModal">Cancel</button>
-        <button type="submit" class="primary">Save Dhikr</button>
-      </div>
-    </form>
-  </div>
-</div>
+<div class="modal" id="optionsModal"><div class="sheet">
+<div class="sheet-head"><h2>Counter Options</h2><button class="close" id="closeOptions">×</button></div>
+<div class="section-title">Counter</div>
+<div class="setting"><label>Choose Dhikr</label><select id="dhikrSelect"></select></div>
+<button class="action" id="addDhikr">＋ Add your own Dhikr</button>
+<button class="action" id="targetBtn">Set target</button>
+<div class="setting"><label>Daily goal</label><span id="dailyProgress">Not set</span></div>
+<button class="action" id="dailyBtn">Change daily goal</button>
+<button class="action" id="favoriteBtn">☆ Save current Dhikr to favorites</button>
+<button class="action" id="favoritesBtn">My Dhikr — saved counts</button>
+<div class="section-title">Counter tools</div>
+<button class="action" id="statsBtn">View statistics</button>
+<button class="action" id="clearCurrent">Clear current Dhikr count</button>
+</div></div>
 
-<!-- GOAL MODAL -->
-<div class="modal-backdrop" id="goalModal">
-  <div class="modal">
-    <h2>Set Your Target</h2>
-    <div class="field">
-      <label for="goalInput">Target count (enter 0 to remove target)</label>
-      <input id="goalInput" type="number" min="0" step="1" placeholder="Example: 100">
-    </div>
-    <div class="modal-actions">
-      <button class="secondary" data-close="goalModal">Cancel</button>
-      <button class="primary" id="saveGoalBtn">Save Target</button>
-    </div>
-  </div>
-</div>
+<div class="modal" id="settingsModal"><div class="sheet">
+<div class="sheet-head"><h2>App Settings</h2><button class="close" id="closeSettings">×</button></div>
+<div class="section-title">Appearance</div>
+<div class="setting"><label>Theme</label><select id="theme">
+<option value="purple">Midnight Purple</option><option value="blue">Ocean Blue</option><option value="black">AMOLED Black</option><option value="teal">Calm Teal</option><option value="rose">Soft Rose</option><option value="mint">Fresh Mint</option>
+</select></div>
+<div class="section-title">Feedback & behavior</div>
+<div class="setting"><label>Tap vibration</label><input type="checkbox" id="vibration"></div>
+<div class="setting"><label>Tap sound</label><input type="checkbox" id="sound"></div>
+<div class="setting"><label>Target reached alert</label><input type="checkbox" id="targetAlert"></div>
+<div class="setting"><label>Confirm before reset</label><input type="checkbox" id="confirmReset"></div>
+<button class="action danger" id="clearAll">Delete all app data</button>
+<p style="color:var(--muted);font-size:11px">Your counters and settings are stored locally on this device.</p>
+</div></div>
 
-<!-- RESET MODAL -->
-<div class="modal-backdrop" id="resetModal">
-  <div class="modal">
-    <h2>Reset this Dhikr?</h2>
-    <p class="muted small">This will reset the current dhikr count to zero. Your saved dhikr and target will remain.</p>
-    <div class="modal-actions">
-      <button class="secondary" data-close="resetModal">Cancel</button>
-      <button class="danger-btn" id="confirmResetBtn">Reset Count</button>
-    </div>
-  </div>
-</div>
+<div class="modal" id="favoritesModal"><div class="sheet">
+<div class="sheet-head"><h2>Saved Dhikr</h2><button class="close" id="closeFavorites">×</button></div>
+<div id="favoritesList"></div>
+</div></div>
 
-<!-- SETTINGS MODAL -->
-<div class="modal-backdrop" id="settingsModal">
-  <div class="modal">
-    <h2>Settings</h2>
-    <div class="field">
-      <label for="themeSelect">Appearance</label>
-      <select id="themeSelect">
-        <option value="dark">Midnight Purple</option>
-        <option value="light">Light</option>
-      </select>
-    </div>
-    <div class="field">
-      <label><input type="checkbox" id="vibrationToggle" style="width:auto;margin-right:8px">Vibration on tap</label>
-    </div>
-    <div class="field">
-      <label><input type="checkbox" id="soundToggle" style="width:auto;margin-right:8px">Sound on tap</label>
-    </div>
-    <div class="field">
-      <button class="secondary" id="exportBtn" style="width:100%">Export My Data</button>
-    </div>
-    <div class="field">
-      <button class="secondary" id="importBtn" style="width:100%">Import Backup</button>
-      <input type="file" id="importFile" accept="application/json,.json" class="hidden">
-    </div>
-    <div class="modal-actions">
-      <button class="primary" data-close="settingsModal">Done</button>
-    </div>
-  </div>
-</div>
-
-<!-- STATS MODAL -->
-<div class="modal-backdrop" id="statsModal">
-  <div class="modal">
-    <h2>Your Statistics</h2>
-    <div class="list">
-      <div class="list-item"><div class="list-main"><div class="list-title">Total Dhikr</div></div><strong id="statsAll">0</strong></div>
-      <div class="list-item"><div class="list-main"><div class="list-title">Today's Dhikr</div></div><strong id="statsToday">0</strong></div>
-      <div class="list-item"><div class="list-main"><div class="list-title">Saved Dhikr</div></div><strong id="statsItems">0</strong></div>
-      <div class="list-item"><div class="list-main"><div class="list-title">Favorites</div></div><strong id="statsFavs">0</strong></div>
-    </div>
-    <div class="modal-actions">
-      <button class="primary" data-close="statsModal">Close</button>
-    </div>
-  </div>
-</div>
-
+<div class="modal" id="statsModal"><div class="sheet">
+<div class="sheet-head"><h2>Statistics</h2><button class="close" id="closeStats">×</button></div>
+<div id="statsContent"></div>
+</div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-(() => {
-"use strict";
+const KEY='tasbihDhikrCounterV5';
+const emptyState=()=>({
+items:[],selected:-1,freeCount:0,freeTotal:0,session:0,
+target:0,dailyGoal:0,dailyCount:0,day:new Date().toDateString(),
+settings:{theme:'purple',vibration:false,sound:false,targetAlert:true,confirmReset:true},
+history:[]
+});
 
-const STORAGE_KEY = "tasbihDhikrCounter_v1";
-const $ = id => document.getElementById(id);
+let state;
+try{state=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){state=null}
+if(!state||!Array.isArray(state.items))state=emptyState();
+state.items=state.items.filter(x=>x&&typeof x.name==='string');
+if(state.selected<0||state.selected>=state.items.length)state.selected=-1;
+state.freeCount=Math.max(0,Number(state.freeCount)||0);
+state.freeTotal=Math.max(0,Number(state.freeTotal)||0);
+state.settings={...emptyState().settings,...(state.settings||{})};
+state.history=Array.isArray(state.history)?state.history:[];
 
-const todayKey = () => {
-  const d = new Date();
-  return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+function el(id){return document.getElementById(id)}
+function current(){return state.items[state.selected]||null}
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function toast(message){
+let t=el('toast');t.textContent=message;t.classList.add('show');
+setTimeout(()=>t.classList.remove('show'),1500);
+}
+function dayCheck(){
+let today=new Date().toDateString();
+if(state.day!==today){state.day=today;state.dailyCount=0}
+}
+function render(){
+dayCheck();
+let item=current();
+el('count').textContent=item?(item.count||0):state.freeCount;
+el('dailyProgress').textContent=state.dailyGoal>0?state.dailyCount+' / '+state.dailyGoal:'Not set';
+let select=el('dhikrSelect');
+select.innerHTML='';
+if(!state.items.length){
+let option=document.createElement('option');
+option.textContent='No Dhikr added yet';
+select.append(option);select.disabled=true;
+}else{
+state.items.forEach((it,i)=>{
+let option=document.createElement('option');
+option.value=i;option.textContent=it.name+(it.favorite?' ★':'');
+select.append(option);
+});
+select.disabled=false;select.value=String(state.selected);
+}
+el('favoriteBtn').disabled=!item;
+el('clearCurrent').disabled=!item;
+el('theme').value=state.settings.theme;
+document.body.className='theme-'+state.settings.theme;
+['vibration','sound','targetAlert','confirmReset'].forEach(k=>el(k).checked=!!state.settings[k]);
+save();
+}
+function count(){
+dayCheck();
+let item=current();
+state.history.push({
+idx:state.selected,
+count:item?(Number(item.count)||0):state.freeCount,
+total:item?(Number(item.total)||0):state.freeTotal,
+session:state.session,dailyCount:state.dailyCount
+});
+if(item){item.count=(Number(item.count)||0)+1;item.total=(Number(item.total)||0)+1}
+else{state.freeCount++;state.freeTotal++}
+state.session++;
+if(state.dailyGoal>0)state.dailyCount++;
+if(state.settings.vibration&&navigator.vibrate)navigator.vibrate(12);
+if(state.settings.sound)beep();
+render();
+let now=item?item.count:state.freeCount;
+if(state.target>0&&now===state.target&&state.settings.targetAlert)toast('Target reached!');
+if(state.dailyGoal>0&&state.dailyCount===state.dailyGoal)toast('Daily goal completed!');
+}
+function undo(){
+let h=state.history.pop();
+if(!h||h.idx!==state.selected){toast('Nothing to undo');return}
+let item=current();
+if(item){item.count=h.count;item.total=h.total}
+else{state.freeCount=h.count;state.freeTotal=h.total}
+state.session=h.session;state.dailyCount=h.dailyCount;render();
+}
+function beep(){
+try{
+let c=new(window.AudioContext||window.webkitAudioContext)();
+let o=c.createOscillator(),g=c.createGain();
+o.frequency.value=740;g.gain.value=.025;
+o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.045);
+}catch(e){}
+}
+function reset(){
+if(state.settings.confirmReset&&!confirm('Reset this counter to zero?'))return;
+let item=current();
+if(item)item.count=0;else state.freeCount=0;
+state.session=0;state.history=[];render();toast('Counter reset');
+}
+function setTarget(){
+let v=prompt('Set counter target (0 = no target)',state.target||0);
+if(v===null)return;
+v=parseInt(v,10);
+if(!Number.isFinite(v)||v<0){toast('Enter a valid target');return}
+state.target=v;
+if(current())current().target=v;
+render();
+}
+function dailyGoal(){
+let v=prompt('Set daily goal (0 = no goal)',state.dailyGoal||0);
+if(v===null)return;
+v=parseInt(v,10);
+if(!Number.isFinite(v)||v<0){toast('Enter a valid goal');return}
+state.dailyGoal=v;state.dailyCount=0;state.day=new Date().toDateString();
+render();
+}
+function openModal(id){el(id).classList.add('show')}
+function closeModal(id){el(id).classList.remove('show')}
+
+function showFavorites(){
+let box=el('favoritesList');box.innerHTML='';
+let list=state.items.map((it,i)=>({it,i})).filter(x=>x.it.favorite||x.it.custom);
+if(!list.length){
+box.textContent='No saved Dhikr yet.';
+}else{
+list.forEach(({it,i})=>{
+let row=document.createElement('div');row.className='listrow';
+let name=document.createElement('span');name.className='name';
+name.textContent=it.name+' · Count: '+(it.count||0);
+let use=document.createElement('button');use.textContent='Continue';
+use.onclick=()=>{
+state.selected=i;state.target=Number(it.target)||0;
+state.session=0;state.history=[];render();
+closeModal('favoritesModal');closeModal('optionsModal');
+};
+let fav=document.createElement('button');
+fav.textContent=it.favorite?'Remove':'Save';
+fav.onclick=()=>{it.favorite=!it.favorite;render();showFavorites()};
+row.append(name,use,fav);box.append(row);
+});
+}
+openModal('favoritesModal');
+}
+function showStats(){
+let total=state.freeTotal+state.items.reduce((a,x)=>a+(Number(x.total)||0),0);
+el('statsContent').innerHTML=
+'<div class="setting"><label>Total counted</label><b>'+total+'</b></div>'+
+'<div class="setting"><label>Today count</label><b>'+state.dailyCount+'</b></div>'+
+'<div class="setting"><label>Current count</label><b>'+(current()?.count??state.freeCount)+'</b></div>'+
+'<div class="setting"><label>Current session</label><b>'+state.session+'</b></div>';
+openModal('statsModal');
+}
+
+el('app').addEventListener('click',e=>{
+if(e.target.closest('button,select,input,.modal'))return;
+count();
+});
+el('tapArea').addEventListener('keydown',e=>{
+if(e.key==='Enter'||e.key===' '){e.preventDefault();count()}
+});
+
+el('undo').onclick=undo;
+el('reset').onclick=reset;
+el('optionsBtn').onclick=()=>openModal('optionsModal');
+el('settingsBtn').onclick=()=>openModal('settingsModal');
+el('closeOptions').onclick=()=>closeModal('optionsModal');
+el('closeSettings').onclick=()=>closeModal('settingsModal');
+el('closeFavorites').onclick=()=>closeModal('favoritesModal');
+el('closeStats').onclick=()=>closeModal('statsModal');
+
+['optionsModal','settingsModal','favoritesModal','statsModal'].forEach(id=>{
+el(id).onclick=e=>{if(e.target===el(id))closeModal(id)};
+});
+
+el('dhikrSelect').onchange=()=>{
+let i=Number(el('dhikrSelect').value);
+if(!Number.isInteger(i)||!state.items[i])return;
+state.selected=i;state.session=0;state.history=[];
+state.target=Number(current().target)||0;render();
 };
 
-const defaultData = () => ({
-  items: [],
-  selectedId: null,
-  settings: {theme:"dark", vibration:false, sound:false},
-  daily: {date:todayKey(), total:0},
-  history: []
+el('addDhikr').onclick=()=>{
+let name=prompt('Enter your Dhikr name:');
+if(!name||!name.trim())return;
+let arabic=prompt('Arabic text (optional):')||'';
+let item={name:name.trim(),ar:arabic.trim(),target:0,count:0,total:0,favorite:false,custom:true};
+state.items.push(item);state.selected=state.items.length-1;
+state.target=0;state.session=0;state.history=[];render();
+toast('Dhikr added');
+};
+
+el('targetBtn').onclick=setTarget;
+el('dailyBtn').onclick=dailyGoal;
+el('favoriteBtn').onclick=()=>{
+let item=current();if(!item)return;
+item.favorite=true;render();toast('Saved to favorites');
+};
+el('favoritesBtn').onclick=showFavorites;
+el('statsBtn').onclick=showStats;
+
+el('clearCurrent').onclick=()=>{
+let item=current();
+if(item&&confirm('Clear count for this Dhikr?')){
+item.count=0;state.session=0;state.history=[];render();
+}
+};
+
+el('theme').onchange=()=>{state.settings.theme=el('theme').value;render()};
+['vibration','sound','targetAlert','confirmReset'].forEach(k=>{
+el(k).onchange=()=>{state.settings[k]=el(k).checked;save()};
 });
 
-let data = loadData();
-let editingId = null;
-
-function loadData(){
-  try{
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if(!saved) return defaultData();
-    const parsed = JSON.parse(saved);
-    return {
-      ...defaultData(),
-      ...parsed,
-      items: Array.isArray(parsed.items) ? parsed.items : [],
-      settings: {...defaultData().settings,...parsed.settings},
-      daily: parsed.daily || defaultData().daily,
-      history: Array.isArray(parsed.history) ? parsed.history : []
-    };
-  }catch(e){ return defaultData(); }
-}
-
-function save(){
-  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(data)); }
-  catch(e){ toast("Unable to save. Please check browser storage."); }
-}
-
-function current(){
-  return data.items.find(x=>x.id===data.selectedId) || null;
-}
-
-function toast(message){
-  const t=$("toast");
-  t.textContent=message;
-  t.classList.add("show");
-  clearTimeout(toast.timer);
-  toast.timer=setTimeout(()=>t.classList.remove("show"),2200);
-}
-
-function openModal(id){ $(id).classList.add("show"); }
-function closeModal(id){ $(id).classList.remove("show"); }
-
-document.querySelectorAll("[data-close]").forEach(btn=>{
-  btn.addEventListener("click",()=>closeModal(btn.dataset.close));
-});
-document.querySelectorAll(".modal-backdrop").forEach(back=>{
-  back.addEventListener("click",e=>{
-    if(e.target===back) back.classList.remove("show");
-  });
-});
-
-function render(){
-  if(data.daily.date!==todayKey()){
-    data.daily={date:todayKey(),total:0};
-  }
-
-  document.body.classList.toggle("light",data.settings.theme==="light");
-  $("themeSelect").value=data.settings.theme;
-  $("vibrationToggle").checked=!!data.settings.vibration;
-  $("soundToggle").checked=!!data.settings.sound;
-
-  renderDhikrList();
-  renderCounter();
-  renderFavorites();
-  renderTotals();
-  save();
-}
-
-function renderDhikrList(){
-  const area=$("dhikrArea");
-  if(!data.items.length){
-    area.innerHTML='<div class="empty"><div class="symbol">📿</div>No dhikr added yet.<br>Add your first dhikr to begin.</div>';
-    return;
-  }
-
-  const select=document.createElement("select");
-  select.id="dhikrSelect";
-  select.setAttribute("aria-label","Select dhikr");
-  select.innerHTML='<option value="">Choose a dhikr</option>';
-  data.items.forEach(item=>{
-    const op=document.createElement("option");
-    op.value=item.id;
-    op.textContent=item.name;
-    select.appendChild(op);
-  });
-  select.value=data.selectedId || "";
-  select.addEventListener("change",()=>{
-    data.selectedId=select.value || null;
-    data.history=[];
-    render();
-  });
-
-  const tools=document.createElement("div");
-  tools.className="dhikr-tools";
-  const del=document.createElement("button");
-  del.className="secondary";
-  del.textContent="Delete";
-  del.addEventListener("click",deleteCurrent);
-  tools.appendChild(del);
-
-  area.innerHTML="";
-  const row=document.createElement("div");
-  row.className="dhikr-row";
-  row.append(select,tools);
-  area.appendChild(row);
-}
-
-function renderCounter(){
-  const item=current();
-  $("counterEmpty").classList.toggle("hidden",!!item);
-  $("counterContent").classList.toggle("hidden",!item);
-  if(!item) return;
-
-  $("activeName").textContent=item.name;
-  $("activeArabic").textContent=item.arabic || "";
-  $("activeArabic").style.display=item.arabic ? "block" : "none";
-  $("countNumber").textContent=item.count.toLocaleString();
-  $("goalText").textContent=item.goal>0 ? "Target: "+item.goal.toLocaleString() : "No target set";
-
-  const percent=item.goal>0 ? Math.min(100,item.count/item.goal*100) : 0;
-  $("countBtn").style.setProperty("--progress",percent+"%");
-  $("progressFill").style.width=percent+"%";
-  $("progressLeft").textContent=item.goal>0 ?
-    Math.max(0,item.goal-item.count).toLocaleString()+" remaining" : "Goal not set";
-  $("progressRight").textContent=item.goal>0 ? Math.round(percent)+"%" : "—";
-  $("undoBtn").disabled=!data.history.length;
-  $("favBtn").innerHTML=item.favorite ? "<span>♥</span>Saved" : "<span>♡</span>Favorite";
-  $("favBtn").classList.toggle("favorite",!!item.favorite);
-}
-
-function renderFavorites(){
-  const favs=data.items.filter(x=>x.favorite);
-  $("favoriteCount").textContent=favs.length+" saved";
-  const list=$("favoritesList");
-  list.innerHTML="";
-  if(!favs.length){
-    list.innerHTML='<div class="muted small">Your favorite dhikr will appear here.</div>';
-    return;
-  }
-  favs.forEach(item=>{
-    const row=document.createElement("div");
-    row.className="list-item";
-    const main=document.createElement("div");
-    main.className="list-main";
-    const title=document.createElement("div");
-    title.className="list-title";
-    title.textContent=item.name;
-    const sub=document.createElement("div");
-    sub.className="list-sub";
-    sub.textContent=item.count.toLocaleString()+" counts";
-    main.append(title,sub);
-    const use=document.createElement("button");
-    use.className="secondary";
-    use.textContent="Select";
-    use.addEventListener("click",()=>{
-      data.selectedId=item.id;
-      data.history=[];
-      render();
-      window.scrollTo({top:0,behavior:"smooth"});
-    });
-    row.append(main,use);
-    list.appendChild(row);
-  });
-}
-
-function renderTotals(){
-  const all=data.items.reduce((sum,item)=>sum+item.count,0);
-  $("todayTotal").textContent=(data.daily.total||0).toLocaleString();
-  $("allTotal").textContent=all.toLocaleString();
-  $("statsAll").textContent=all.toLocaleString();
-  $("statsToday").textContent=(data.daily.total||0).toLocaleString();
-  $("statsItems").textContent=data.items.length;
-  $("statsFavs").textContent=data.items.filter(x=>x.favorite).length;
-}
-
-function addDhikr(){
-  editingId=null;
-  $("dhikrModalTitle").textContent="Add a Dhikr";
-  $("dhikrForm").reset();
-  openModal("dhikrModal");
-  setTimeout(()=>$("dhikrNameInput").focus(),100);
-}
-
-function editDhikr(){
-  const item=current();
-  if(!item) return;
-  editingId=item.id;
-  $("dhikrModalTitle").textContent="Edit Dhikr";
-  $("dhikrNameInput").value=item.name;
-  $("dhikrArabicInput").value=item.arabic||"";
-  $("dhikrMeaningInput").value=item.meaning||"";
-  openModal("dhikrModal");
-}
-
-$("addBtn").addEventListener("click",addDhikr);
-$("editBtn").addEventListener("click",editDhikr);
-
-$("dhikrForm").addEventListener("submit",e=>{
-  e.preventDefault();
-  const name=$("dhikrNameInput").value.trim();
-  if(!name) return;
-  const arabic=$("dhikrArabicInput").value.trim();
-  const meaning=$("dhikrMeaningInput").value.trim();
-
-  if(editingId){
-    const item=data.items.find(x=>x.id===editingId);
-    if(item) Object.assign(item,{name,arabic,meaning});
-    toast("Dhikr updated");
-  }else{
-    const item={
-      id:crypto.randomUUID ? crypto.randomUUID() : String(Date.now()+Math.random()),
-      name,arabic,meaning,count:0,goal:0,favorite:false
-    };
-    data.items.push(item);
-    data.selectedId=item.id;
-    data.history=[];
-    toast("Dhikr saved");
-  }
-  closeModal("dhikrModal");
-  render();
-});
-
-function deleteCurrent(){
-  const item=current();
-  if(!item) return;
-  if(!confirm('Delete "'+item.name+'"? This will remove its saved count and target.')) return;
-  data.items=data.items.filter(x=>x.id!==item.id);
-  data.selectedId=null;
-  data.history=[];
-  render();
-  toast("Dhikr deleted");
-}
-
-function count(){
-  const item=current();
-  if(!item){toast("Please add or select a dhikr first");return;}
-  data.history.push({id:item.id,count:item.count});
-  if(data.history.length>100) data.history.shift();
-  item.count++;
-  data.daily.total=(data.daily.total||0)+1;
-  render();
-  if(data.settings.vibration && navigator.vibrate) navigator.vibrate(25);
-  if(data.settings.sound) playSound();
-  if(item.goal>0 && item.count===item.goal) toast("Target completed! Alhamdulillah");
-}
-
-$("countBtn").addEventListener("click",count);
-
-function undo(){
-  const previous=data.history.pop();
-  if(!previous){toast("Nothing to undo");return;}
-  const item=data.items.find(x=>x.id===previous.id);
-  if(item){
-    const difference=item.count-previous.count;
-    item.count=previous.count;
-    data.daily.total=Math.max(0,(data.daily.total||0)-difference);
-  }
-  render();
-  toast("Last count undone");
-}
-$("undoBtn").addEventListener("click",undo);
-
-$("resetBtn").addEventListener("click",()=>{
-  if(!current()) return;
-  openModal("resetModal");
-});
-$("confirmResetBtn").addEventListener("click",()=>{
-  const item=current();
-  if(!item) return;
-  data.daily.total=Math.max(0,(data.daily.total||0)-item.count);
-  item.count=0;
-  data.history=[];
-  closeModal("resetModal");
-  render();
-  toast("Count reset");
-});
-
-$("goalBtn").addEventListener("click",()=>{
-  const item=current();
-  if(!item) return;
-  $("goalInput").value=item.goal||"";
-  openModal("goalModal");
-});
-$("saveGoalBtn").addEventListener("click",()=>{
-  const item=current();
-  if(!item) return;
-  const value=Math.max(0,Math.floor(Number($("goalInput").value)||0));
-  item.goal=value;
-  closeModal("goalModal");
-  render();
-  toast(value ? "Target saved" : "Target removed");
-});
-
-$("favBtn").addEventListener("click",()=>{
-  const item=current();
-  if(!item) return;
-  item.favorite=!item.favorite;
-  render();
-  toast(item.favorite ? "Added to favorites" : "Removed from favorites");
-});
-
-$("shareBtn").addEventListener("click",async()=>{
-  const item=current();
-  if(!item) return;
-  const message="My Dhikr Progress\n"+item.name+"\nCount: "+item.count+
-    (item.goal>0 ? "\nTarget: "+item.goal : "")+"\nTasbih Dhikr Counter";
-  try{
-    if(navigator.share) await navigator.share({title:"My Dhikr Progress",text:message});
-    else if(navigator.clipboard){
-      await navigator.clipboard.writeText(message);
-      toast("Progress copied");
-    }else toast(message);
-  }catch(e){}
-});
-
-$("settingsBtn").addEventListener("click",()=>openModal("settingsModal"));
-$("statsBtn").addEventListener("click",()=>openModal("statsModal"));
-
-$("themeSelect").addEventListener("change",()=>{
-  data.settings.theme=$("themeSelect").value;
-  render();
-});
-$("vibrationToggle").addEventListener("change",()=>{
-  data.settings.vibration=$("vibrationToggle").checked;
-  save();
-});
-$("soundToggle").addEventListener("change",()=>{
-  data.settings.sound=$("soundToggle").checked;
-  save();
-});
-
-function playSound(){
-  try{
-    const AudioContext=window.AudioContext||window.webkitAudioContext;
-    if(!AudioContext) return;
-    const ctx=new AudioContext();
-    const oscillator=ctx.createOscillator();
-    const gain=ctx.createGain();
-    oscillator.frequency.value=700;
-    gain.gain.setValueAtTime(.045,ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.06);
-    oscillator.connect(gain);
-    gain.connect(ctx.destination);
-    oscillator.start();
-    oscillator.stop(ctx.currentTime+.06);
-    oscillator.onended=()=>ctx.close();
-  }catch(e){}
-}
-
-$("exportBtn").addEventListener("click",()=>{
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement("a");
-  a.href=url;
-  a.download="tasbih-dhikr-backup.json";
-  a.click();
-  URL.revokeObjectURL(url);
-  toast("Backup downloaded");
-});
-
-$("importBtn").addEventListener("click",()=>$("importFile").click());
-$("importFile").addEventListener("change",async e=>{
-  const file=e.target.files[0];
-  if(!file) return;
-  try{
-    const imported=JSON.parse(await file.text());
-    if(!Array.isArray(imported.items)) throw new Error("Invalid backup");
-    if(!confirm("Import backup? This will replace the data currently saved in this browser.")) return;
-    data={
-      ...defaultData(),
-      ...imported,
-      settings:{...defaultData().settings,...imported.settings}
-    };
-    render();
-    closeModal("settingsModal");
-    toast("Backup imported");
-  }catch(err){toast("Could not read that backup file");}
-  e.target.value="";
-});
+el('clearAll').onclick=()=>{
+if(!confirm('Delete all counters and settings?'))return;
+localStorage.removeItem(KEY);state=emptyState();render();
+};
 
 render();
-})();
 </script>
 </body>
 </html>
