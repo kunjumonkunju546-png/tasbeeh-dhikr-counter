@@ -37,7 +37,17 @@ body.theme-black .orb{background:radial-gradient(circle at 32% 25%,#555 0%,#2929
 <div class="section-title">Appearance</div><div class="setting"><label>Theme</label><select id="theme"><option value="purple">Midnight Purple</option><option value="blue">Ocean Blue</option><option value="black">AMOLED Black</option><option value="teal">Calm Teal</option><option value="rose">Soft Rose</option><option value="sunset">Sunset</option><option value="mint">Fresh Mint</option><option value="lavender">Lavender</option><option value="amber">Warm Amber</option><option value="swalath">Swalath Green</option></select></div><div class="setting"><label>Counter size</label><select id="counterSize"><option value="normal">Normal</option><option value="large">Large</option><option value="compact">Compact</option></select></div>
 <div class="section-title">Feedback & behavior</div><div class="setting"><label>Tap vibration</label><input type="checkbox" id="vibration"></div><div class="setting"><label>Tap sound</label><input type="checkbox" id="sound"></div><div class="setting"><label>Target reached alert</label><input type="checkbox" id="targetAlert"></div><div class="setting"><label>Keep screen awake</label><input type="checkbox" id="awake"></div><div class="setting"><label>Confirm before reset</label><input type="checkbox" id="confirmReset"></div>
 <div class="section-title">Data</div><button class="action danger" id="clearAll">Delete all app data</button><p style="color:var(--muted);font-size:11px;line-height:1.5;margin:12px 0 0">Your counters and settings are stored locally on this device.</p></div></div>
-<div class="modal" id="favoritesModal"><div class="sheet"><div class="sheet-head"><h2>Saved Dhikr</h2><button class="close" id="closeFavorites">×</button></div><div id="favoritesList"></div></div></div><div class="modal" id="statsModal"><div class="sheet"><div class="sheet-head"><h2>Statistics</h2><button class="close" id="closeStats">×</button></div><div id="statsContent"></div></div></div><div class="toast" id="toast"></div>
+<div class="modal" id="favoritesModal"><div class="sheet"><div class="sheet-head"><h2>Saved Dhikr</h2><button class="close" id="closeFavorites">×</button></div><div id="favoritesList"></div></div></div><div class="modal" id="statsModal"><div class="sheet"><div class="sheet-head"><h2>Statistics</h2><button class="close" id="closeStats">×</button></div><div id="statsContent"></div></div></div>
+  <div id="backSaveModal" style="display:none;position:fixed;inset:0;background:#000b;z-index:100;align-items:center;justify-content:center;padding:20px">
+  <div style="background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px;width:100%;max-width:350px;text-align:center">
+    <h3 style="margin-top:0">Save this Dhikr?</h3>
+    <p style="color:var(--muted);font-size:14px">Would you like to save this Dhikr and its count?</p>
+    <button id="backSaveYes" class="action">Yes, Save</button>
+    <button id="backSaveNo" class="action">No, Don't Save</button>
+    <button id="backSaveCancel" class="action">Cancel</button>
+  </div>
+</div>
+  <div class="toast" id="toast"></div>
 
 <script>
 /* Preset Dhikr are available in Options, but none is selected automatically. */
@@ -355,6 +365,55 @@ el('clearAll').onclick=()=>{
   localStorage.removeItem(KEY);
   state=emptyState();
   render(); toast('App data reset');
+};
+  // Ask before leaving the app using the Back button
+let allowBackExit = false;
+let backPromptOpen = false;
+
+history.pushState({tasbihGuard:true}, '', location.href);
+
+window.addEventListener('popstate', () => {
+  if (allowBackExit) return;
+
+  history.pushState({tasbihGuard:true}, '', location.href);
+
+  if (backPromptOpen) return;
+
+  const item = current();
+
+  if (!item || item.count <= 0) {
+    allowBackExit = true;
+    history.back();
+    return;
+  }
+
+  backPromptOpen = true;
+  el('backSaveModal').style.display = 'flex';
+});
+
+function finishBackExit(saveDhikr) {
+  const item = current();
+
+  if (saveDhikr && item) {
+    item.favorite = true;
+    save();
+    toast('Dhikr saved successfully');
+  }
+
+  backPromptOpen = false;
+  el('backSaveModal').style.display = 'none';
+
+  allowBackExit = true;
+  history.back();
+}
+
+el('backSaveYes').onclick = () => finishBackExit(true);
+
+el('backSaveNo').onclick = () => finishBackExit(false);
+
+el('backSaveCancel').onclick = () => {
+  backPromptOpen = false;
+  el('backSaveModal').style.display = 'none';
 };
 render();
 </script></body></html>
