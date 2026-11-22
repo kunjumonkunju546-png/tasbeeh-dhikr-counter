@@ -828,20 +828,34 @@ function importBackup(file){
  };
  reader.readAsText(file);
 }
+/* Navigation */
+document.querySelectorAll(".nav-btn").forEach(btn=>{
+ btn.addEventListener("click",()=>{
+  showPage(btn.dataset.page);
+ });
+});
+
 /* Counter touch area: one tap = one count. */
 function countWithActivity(){
  const before=activeCount();
+
  countOne();
+
  const after=activeCount();
 
  if(after>before){
   const item=current();
+
   state.activity.push({
    name:item?item.name:"Free Counter",
    amount:1,
    date:new Date().toLocaleString()
   });
-  if(state.activity.length>100)state.activity.shift();
+
+  if(state.activity.length>100){
+   state.activity.shift();
+  }
+
   save();
   renderHistory();
  }
@@ -855,6 +869,115 @@ $("tapArea").addEventListener("keydown",e=>{
   countWithActivity();
  }
 });
+
+/* Counter buttons */
+$("undo").onclick=undo;
+$("reset").onclick=resetCounter;
+$("chooseDhikr").onclick=()=>openModal("selectModal");
+
+/* Dhikr library and selection */
+$("freeCounter").onclick=()=>selectDhikr(-1);
+$("searchDhikr").addEventListener("input",renderDhikrList);
+$("newDhikr").onclick=()=>openModal("customModal");
+$("saveCustom").onclick=addCustom;
+
+/* Counter target and daily goal */
+$("targetText").addEventListener("click",()=>{
+ $("targetInput").value=activeTarget();
+ openModal("targetModal");
+});
+
+$("saveTarget").onclick=setTarget;
+$("setDailyGoal").onclick=setDailyGoal;
+
+/* Modal close buttons */
+document.querySelectorAll("[data-close]").forEach(btn=>{
+ btn.onclick=()=>{
+  closeModal(btn.dataset.close);
+ };
+});
+
+document.querySelectorAll(".modal").forEach(modal=>{
+ modal.addEventListener("click",e=>{
+  if(e.target===modal){
+   closeModal(modal.id);
+  }
+ });
+});
+
+/* Settings */
+$("themeSelect").onchange=()=>{
+ state.settings.theme=$("themeSelect").value;
+ render();
+};
+
+["vibration","sound","targetAlert","confirmReset"].forEach(key=>{
+ $(key).onchange=()=>{
+  state.settings[key]=$(key).checked;
+  save();
+ };
+});
+
+/* Keep screen awake */
+$("awake").onchange=async()=>{
+ state.settings.awake=$("awake").checked;
+ save();
+
+ if(state.settings.awake && "wakeLock" in navigator){
+  try{
+   wakeLock=await navigator.wakeLock.request("screen");
+   showToast("Screen will stay awake");
+  }catch(e){
+   showToast("Screen-awake mode unavailable");
+  }
+ }else if(wakeLock){
+  try{
+   await wakeLock.release();
+  }catch(e){}
+  wakeLock=null;
+ }
+};
+
+document.addEventListener("visibilitychange",async()=>{
+ if(
+  document.visibilityState==="visible" &&
+  state.settings.awake &&
+  "wakeLock" in navigator
+ ){
+  try{
+   wakeLock=await navigator.wakeLock.request("screen");
+  }catch(e){}
+ }
+});
+
+/* Backup and restore */
+$("exportData").onclick=exportBackup;
+$("importData").onclick=()=>$("importFile").click();
+
+$("importFile").onchange=e=>{
+ const file=e.target.files[0];
+
+ if(file){
+  importBackup(file);
+ }
+
+ e.target.value="";
+};
+
+/* Delete app data */
+$("deleteData").onclick=()=>{
+ if(!confirm("Delete all Dhikr, counters, favorites and settings permanently?")){
+  return;
+ }
+
+ localStorage.removeItem(STORAGE_KEY);
+ state=freshState();
+ undoStack=[];
+
+ render();
+ showPage("home");
+ showToast("All app data deleted");
+};
 /* Initial render */
 render();
 </script>
