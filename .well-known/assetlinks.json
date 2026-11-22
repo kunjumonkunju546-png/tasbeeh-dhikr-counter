@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.nazyantravels.tasbih.twa",
+      "sha256_cert_fingerprints": [
+        "CD:1F:80:8C:F8:BD:77:AA:F1:82:A2:60:21:65:5C:98:15:91:AA:34:CB:F2:C6:3B:DC:BD:F4:6D:8B:08:AF:74"
+      ]
+    }
+  }
+]
