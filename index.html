@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#092b20">
-<meta name="description" content="Tasbih & Dhikr - A beautiful Islamic Dhikr Counter">
-<title>Tasbih & Dhikr</title>
+<link rel="manifest" href="/manifest.json">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 :root{
@@ -1039,5 +1041,15 @@ $("deleteData").onclick=()=>{
 /* Initial render */
 render();
 </script>
+
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("/sw.js")
+      .catch(error => console.error("Service Worker registration failed:", error));
+  });
+}
+</script>
+
 </body>
 </html>
