@@ -467,9 +467,14 @@ settings:{theme:"dark",vibration:true,sound:true,targetAlert:true,awake:false,co
 function loadState(){
  let saved=null;
  try{saved=JSON.parse(localStorage.getItem(STORAGE_KEY)||"null")}catch(e){}
- if(!saved || !Array.isArray(saved.items)) return freshState();
+const defaultsKey="tasbihDhikrVibrationSoundDefaultsV1";
 
- const base=freshState();
+if(!saved || !Array.isArray(saved.items)){
+ localStorage.setItem(defaultsKey,"done");
+ return freshState();
+}
+
+const base=freshState();
  const s={...base,...saved};
  s.items=s.items.filter(x=>x && typeof x.name==="string").map(x=>({
   name:x.name,ar:x.ar||"",count:Math.max(0,Number(x.count)||0),
@@ -485,10 +490,20 @@ function loadState(){
 
  s.selected=Number.isInteger(s.selected)&&s.selected>=-1&&s.selected<s.items.length?s.selected:-1;
  ["freeCount","freeTotal","session","target","dailyGoal","dailyCount"].forEach(k=>s[k]=Math.max(0,Number(s[k])||0));
- s.settings={...base.settings,...(s.settings||{})};
- s.history=Array.isArray(s.history)?s.history:[];
- s.activity=Array.isArray(s.activity)?s.activity:[];
- return s;
+s.settings={...base.settings,...(s.settings||{})};
+
+// First-time update: turn ON vibration and sound once.
+if(localStorage.getItem(defaultsKey)!=="done"){
+ s.settings.vibration=true;
+ s.settings.sound=true;
+ localStorage.setItem(defaultsKey,"done");
+}
+s.history=Array.isArray(s.history)?s.history:[];
+s.activity=Array.isArray(s.activity)?s.activity:[];
+
+localStorage.setItem(STORAGE_KEY,JSON.stringify(s));
+
+return s;
 }
 
 let state=loadState();
