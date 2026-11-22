@@ -460,8 +460,7 @@ function freshState(){
   items:PRESETS.map(p=>({...p,count:0,total:0,target:0,favorite:false,custom:false,preset:true})),
   selected:-1,freeCount:0,freeTotal:0,session:0,target:0,
   dailyGoal:0,dailyCount:0,day:new Date().toDateString(),
-  settings:{theme:"dark",vibration:false,sound:false,targetAlert:true,awake:false,confirmReset:true},
-  history:[],activity:[]
+settings:{theme:"dark",vibration:true,sound:true,targetAlert:true,awake:false,confirmReset:true},  history:[],activity:[]
  };
 }
 
