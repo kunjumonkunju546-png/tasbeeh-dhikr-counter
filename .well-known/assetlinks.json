@@ -7,7 +7,8 @@
       "namespace": "android_app",
       "package_name": "com.nazyantravels.tasbih.twa",
       "sha256_cert_fingerprints": [
-        "CD:1F:80:8C:F8:BD:77:AA:F1:82:A2:60:21:65:5C:98:15:91:AA:34:CB:F2:C6:3B:DC:BD:F4:6D:8B:08:AF:74"
+        "CD:1F:80:8C:F8:BD:77:AA:F1:82:A2:60:21:65:5C:98:15:91:AA:34:CB:F2:C6:3B:DC:BD:F4:6D:8B:08:AF:74",
+        "56:B6:84:C6:F5:1C:B6:3A:3D:07:E9:27:0B:68:A2:CF:96:3C:09:73:CC:28:E8:86:F8:4B:EE:2B:B9:0A:FD:1F"
       ]
     }
   }
