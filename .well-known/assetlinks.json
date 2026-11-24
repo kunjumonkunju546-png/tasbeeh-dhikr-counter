@@ -1,15 +1,11 @@
 [
   {
-    "relation": [
-      "delegate_permission/common.handle_all_urls"
-    ],
+    "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
       "package_name": "com.nazyantravels.tasbih.twa",
-      "sha256_cert_fingerprints": [
-        "CD:1F:80:8C:F8:BD:77:AA:F1:82:A2:60:21:65:5C:98:15:91:AA:34:CB:F2:C6:3B:DC:BD:F4:6D:8B:08:AF:74",
-        "56:B6:84:C6:F5:1C:B6:3A:3D:07:E9:27:0B:68:A2:CF:96:3C:09:73:CC:28:E8:86:F8:4B:EE:2B:B9:0A:FD:1F"
-      ]
+      "sha256_cert_fingerprints":
+        ["6B:F2:9D:BD:59:3E:BC:B1:D1:1F:CF:81:F7:35:AE:33:8E:B2:50:40:C8:2F:AB:E3:04:A7:3C:DB:C3:51:99:BB"]
     }
   }
 ]
